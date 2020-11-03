@@ -112,7 +112,7 @@ factor_vec
 as.numeric(factor_vec)
 ```
 
-##NSDUH -- Strings
+## NSDUH -- Strings
 
 ```{r}
 url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
@@ -146,7 +146,7 @@ data_marj =
   filter(!(State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West")))
 ```
 
-##NSDUH -- Factors
+## NSDUH -- Factors
 
 ```{r}
 data_marj %>%
@@ -155,5 +155,33 @@ data_marj %>%
   ggplot(aes(x = State, y = percent, color = year)) + 
     geom_point() + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+## Weather
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USC00519397", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", 
+      USC00519397 = "Waikiki_HA",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
+```{r}
+weather_df %>%
+  mutate(name = fct_reorder(name, tmax)) %>% 
+  ggplot(aes(x = name, y = tmax)) + 
+  geom_violin(aes(fill = name), color = "blue", alpha = .5) + 
+  theme(legend.position = "bottom")
 ```
 
