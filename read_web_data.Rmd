@@ -99,3 +99,31 @@ nyc_water =
   as_tibble()
 ```
 
+## BRFSS
+
+Same process, diff data:
+
+```{r}
+brfss_2010 = 
+  GET("https://chronicdata.cdc.gov/resource/acme-vg9e.csv",
+      query = list("$limit" = 5000)) %>% 
+  content("parsed")
+```
+
+## Some data aren't so nice
+
+Let's look at Pokemon:
+
+```{r}
+pokemon = 
+  GET("https://pokeapi.co/api/v2/pokemon/ditto") %>% 
+  content()
+
+pokemon$name
+pokemon$height
+pokemon$abilities
+```
+
+## Closing thoughts
+
+Be reasonable!!
